@@ -97,6 +97,16 @@ public class ServerResponse {
         );
     }
 
+    public static ResponseEntity<LoginResponse> login(String message, String token) {
+        return ResponseEntity.ok(
+                new LoginResponse(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        message,
+                        token
+                )
+        );
+    }
 
 }
 
