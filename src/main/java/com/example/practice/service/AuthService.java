@@ -1,6 +1,7 @@
 package com.example.practice.service;
 
 import com.example.practice.exception.AlreadyExistException;
+import com.example.practice.exception.UnauthorizedException;
 import com.example.practice.model.dto.LoginDto;
 import com.example.practice.model.dto.UserDto;
 import com.example.practice.model.entity.Users;
@@ -9,6 +10,7 @@ import com.example.practice.repository.UserRepo;
 import com.example.practice.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,12 +42,19 @@ public class AuthService {
     }
 
     public String verify(LoginDto dto) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
 
-        if(!authentication.isAuthenticated()) {
-            return "User Not Authenticated";
-        }else return jwtService.generateToken(dto.getUsername());
+            if (!authentication.isAuthenticated()) {
+                throw new UnauthorizedException("Invalid credentials");
+            }
+
+            return jwtService.generateToken(dto.getUsername());
+
+        } catch (BadCredentialsException e) {
+            throw new UnauthorizedException("Invalid username or password");
+        }
     }
 
 }

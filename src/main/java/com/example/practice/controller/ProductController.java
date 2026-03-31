@@ -9,6 +9,7 @@ import com.example.practice.response.ResponseWithData;
 import com.example.practice.response.ServerResponse;
 import com.example.practice.service.ProductService;
 import com.example.practice.utils.commons.CrudController;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiConstants.API+ApiConstants.API_VERSION_V1)
+@SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class ProductController implements CrudController<ProductDto> {
     private final ProductService productService;
